@@ -46,6 +46,16 @@ function App() {
     setCurrentPage(1);
   };
 
+  const handleUserDeleted = (userId: number) => {
+    setAllUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
+    const newTotalPages = Math.ceil((allUsers.length - 1) / ITEMS_PER_PAGE);
+    if (currentPage > newTotalPages && newTotalPages > 0) {
+      setCurrentPage(newTotalPages);
+    } else if (newTotalPages === 0) {
+      setCurrentPage(1);
+    }
+  };
+
   const indexOfLastUser = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstUser = indexOfLastUser - ITEMS_PER_PAGE;
   const currentUsers = allUsers.slice(indexOfFirstUser, indexOfLastUser);
@@ -80,7 +90,7 @@ function App() {
         Agregar Usuario
       </button>
       <div className='flex-grow'>
-        <TableUsers users={currentUsers} />
+        <TableUsers users={currentUsers} onUserDeleted={handleUserDeleted} />
       </div>
       {totalPages > 1 && (
         <div className='flex justify-center items-center space-x-2 py-8'>

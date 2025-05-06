@@ -49,3 +49,24 @@ export async function createUser(formData: UserFormData): Promise<User> {
     throw new Error('Failed to create user');
   }
 }
+
+export async function deleteUser(userId: number): Promise<void> {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_USERS_URL}/${userId}`,
+      {
+        method: 'DELETE',
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Network response was not ok on delete: ${response.status}`
+      );
+    }
+    return;
+  } catch (error) {
+    console.error(`Error deleting user with ID ${userId}:`, error);
+    throw error;
+  }
+}

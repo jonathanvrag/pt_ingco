@@ -1,13 +1,27 @@
 import type { User } from '../types/users';
+import { deleteUser } from '../services/fakeapi.services';
 
 interface TableUsersProps {
   users: User[];
+  onUserDeleted: (userId: number) => void;
 }
 
-export default function TableUsers({ users }: TableUsersProps) {
+export default function TableUsers({ users, onUserDeleted }: TableUsersProps) {
   if (!users || users.length === 0) {
     return <p className='text-center text-gray-500'>No users available.</p>;
   }
+
+  const handleDelete = async (userId: number) => {
+    if (window.confirm('Seguro quieres eliminar el usuario?')) {
+      try {
+        await deleteUser(userId);
+        onUserDeleted(userId);
+      } catch (error) {
+        console.error('Failed to delete user:', error);
+        alert('Failed to delete user. Please try again.');
+      }
+    }
+  };
 
   return (
     <div className='overflow-x-auto px-96 py-10'>
@@ -15,16 +29,16 @@ export default function TableUsers({ users }: TableUsersProps) {
         <thead className='bg-gray-100'>
           <tr>
             <th className='px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase'>
-              First Name
+              Nombre
             </th>
             <th className='px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase'>
-              Last Name
+              Apellidos
             </th>
             <th className='px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase'>
               Email
             </th>
             <th className='px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase'>
-              Action
+              Acciones
             </th>
           </tr>
         </thead>
@@ -40,7 +54,13 @@ export default function TableUsers({ users }: TableUsersProps) {
                 {user.lastName}
               </td>
               <td className='px-6 py-4 text-sm text-gray-900'>{user.email}</td>
-              <td className='px-6 py-4 text-sm text-gray-900'>Edit</td>
+              <td className='px-6 py-4 text-sm text-gray-900'>
+                <button
+                  onClick={() => handleDelete(user.id)}
+                  className='text-red-600 hover:text-red-800 font-medium'>
+                  Delete
+                </button>
+              </td>
             </tr>
           ))}
         </tbody>
