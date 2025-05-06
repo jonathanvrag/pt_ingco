@@ -3,6 +3,8 @@ import type { User } from './types/users';
 import './App.css';
 import { fetchUsers } from './services/fakeapi.services';
 import TableUsers from './components/TableUsers';
+import Modal from './components/Modal';
+import FormUser from './components/FormUser';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -11,6 +13,7 @@ function App() {
   const [currentPage, setCurrentPage] = useState<number>(1);
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
+  const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,6 +34,17 @@ function App() {
 
     fetchData();
   }, []);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => {
+    setIsModalOpen(false);
+  };
+
+  const handleUserCreated = (createdUser: User) => {
+    setAllUsers(prevUsers => [createdUser, ...prevUsers]);
+    closeModal();
+    setCurrentPage(1);
+  };
 
   const indexOfLastUser = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstUser = indexOfLastUser - ITEMS_PER_PAGE;
@@ -60,6 +74,11 @@ function App() {
       <h1 className='text-3xl font-bold text-center my-8 text-gray-800'>
         Lista de Usuarios
       </h1>
+      <button
+        onClick={openModal}
+        className='px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600'>
+        Agregar Usuario
+      </button>
       <div className='flex-grow'>
         <TableUsers users={currentUsers} />
       </div>
@@ -100,6 +119,13 @@ function App() {
           de {allUsers.length} usuarios.
         </p>
       )}
+
+      <Modal
+        isOpen={isModalOpen}
+        onClose={closeModal}
+        title='Gestionar Usuario'>
+        <FormUser onUserCreated={handleUserCreated} onCancel={closeModal} />
+      </Modal>
     </div>
   );
 }
