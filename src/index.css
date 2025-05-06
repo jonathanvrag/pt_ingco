@@ -2,5 +2,14 @@
 
 :root {
   color: #242424;
-  background-color: rgba(255, 255, 255, 0.87);
+  background-color: #4a5565;
+
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+/* --- Tema Oscuro --- */
+/* Aplicar cuando el elemento html tiene la clase 'dark' */
+html.dark {
+  color: #242424;
+  background-color: #ffffff;
 }

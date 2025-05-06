@@ -1,5 +1,6 @@
 import type { User } from '../types/users';
 import { deleteUser } from '../services/fakeapi.services';
+import { HiOutlineTrash } from 'react-icons/hi';
 
 interface TableUsersProps {
   users: User[];
@@ -53,8 +54,8 @@ export default function TableUsers({ users, onUserDeleted }: TableUsersProps) {
               <td className='px-6 py-4 text-sm'>
                 <button
                   onClick={() => handleDelete(user.id)}
-                  className='text-red-600 hover:text-red-800 font-medium'>
-                  Delete
+                  className='text-red-600 hover:text-red-800 font-medium cursor-pointer'>
+                  <HiOutlineTrash className='text-lg' />
                 </button>
               </td>
             </tr>

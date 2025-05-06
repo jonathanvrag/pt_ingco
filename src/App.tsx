@@ -5,6 +5,7 @@ import { fetchUsers } from './services/fakeapi.services';
 import TableUsers from './components/TableUsers';
 import Modal from './components/Modal';
 import FormUser from './components/FormUser';
+import { HiOutlineUserAdd } from 'react-icons/hi';
 
 const ITEMS_PER_PAGE = 10;
 
@@ -80,15 +81,18 @@ function App() {
   }
 
   return (
-    <div className='container mx-auto p-4 min-h-screen flex flex-col'>
-      <h1 className='text-3xl font-bold text-center my-8 text-gray-800'>
+    <div className='container mx-auto p-4 min-h-screen flex flex-col bg-white dark:bg-gray-600'>
+      <h1 className='text-3xl font-bold text-center my-8 text-white'>
         Lista de Usuarios
       </h1>
+      <div className='flex items-end justify-end'>
       <button
         onClick={openModal}
-        className='px-4 py-2 bg-green-500 text-white rounded hover:bg-green-600'>
-        Agregar Usuario
+        className='w-auto px-4 py-2 bg-green-700 text-white rounded-xl hover:bg-green-600 shadow-lg cursor-pointer'>
+        <HiOutlineUserAdd className='size-6' />
       </button>
+
+      </div>
       <div className='flex-grow'>
         <TableUsers users={currentUsers} onUserDeleted={handleUserDeleted} />
       </div>
@@ -97,7 +101,7 @@ function App() {
           <button
             onClick={goToPreviousPage}
             disabled={currentPage === 1}
-            className='px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'>
+            className='px-4 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'>
             Anterior
           </button>
           {Array.from({ length: totalPages }, (_, i) => i + 1).map(
@@ -106,7 +110,7 @@ function App() {
                 key={pageNumber}
                 onClick={() => goToPage(pageNumber)}
                 disabled={currentPage === pageNumber}
-                className={`px-4 py-2 rounded ${
+                className={`px-4 py-2 rounded-xl ${
                   currentPage === pageNumber
                     ? 'bg-blue-500 text-white'
                     : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
@@ -118,7 +122,7 @@ function App() {
           <button
             onClick={goToNextPage}
             disabled={currentPage === totalPages || totalPages === 0}
-            className='px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'>
+            className='px-4 py-2 bg-gray-200 text-gray-700 rounded-xl hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'>
             Siguiente
           </button>
         </div>
