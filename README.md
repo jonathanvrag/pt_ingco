@@ -104,6 +104,7 @@ Entre los servicios disponibles en la aplicación están:
 - **fetchUsers():** Obtiene la lista de usuarios activos desde la API.
 - **createUser():** Crea un nuevo usuario enviando los datos a la API.
 - **deleteUser():** Elimina un usuario específico de la API.
+- **updateUser():** Actualiza los datos de un usuario existente en la API.
 
 ## Descripción del Proyecto
 
@@ -113,7 +114,8 @@ Entre los servicios disponibles en la aplicación están:
 
 - **Lista de Usuarios:** Muestra una tabla con los usuarios registrados, incluyendo su nombre, apellido y correo electrónico. Permite eliminar usuarios directamente desde la tabla.
 - **Paginación:** Divide la lista de usuarios en páginas para facilitar la navegación.
-- **Modal de Creación:** Permite agregar nuevos usuarios mediante un formulario interactivo.
+- **Modal de Creación/Edición:** Permite agregar nuevos usuarios o editar uno existente mediante un formulario interactivo.
+- **Modal de Detalles:** Permite visualizar información detallada de un usuario seleccionado.
 
 ### Tecnologías utilizadas
 
