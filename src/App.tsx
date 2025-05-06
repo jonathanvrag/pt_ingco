@@ -16,6 +16,8 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
 
+  /* El hook `useEffect` se encarga de obtener los datos del usuario de una API cuando el componente se monta 
+  por primera vez. */
   useEffect(() => {
     const fetchData = async () => {
       setLoading(true);
@@ -41,12 +43,23 @@ function App() {
     setIsModalOpen(false);
   };
 
+  /**
+   * La función `handleUserCreated` añade un nuevo usuario a la lista de todos los usuarios, cierra un modal y
+   * establece la página actual en 1.
+   * @param {User} createdUser - El parámetro `createdUser` es un objeto que representa a un usuario recién creado.
+   * Contiene información como el nombre, el apellido y el correo electrónico.
+   */
   const handleUserCreated = (createdUser: User) => {
     setAllUsers(prevUsers => [createdUser, ...prevUsers]);
     closeModal();
     setCurrentPage(1);
   };
 
+  /**
+   * La función `handleUserDeleted` elimina un usuario de una lista de usuarios y ajusta el número de la página actual
+   * según los usuarios restantes.
+   * @param {number} userId - El parámetro `userId` es el identificador único del usuario que ha sido eliminado.
+   */
   const handleUserDeleted = (userId: number) => {
     setAllUsers(prevUsers => prevUsers.filter(user => user.id !== userId));
     const newTotalPages = Math.ceil((allUsers.length - 1) / ITEMS_PER_PAGE);
@@ -57,6 +70,7 @@ function App() {
     }
   };
 
+  /* Estas líneas de código son responsables de gestionar la paginación en la tabla. */
   const indexOfLastUser = currentPage * ITEMS_PER_PAGE;
   const indexOfFirstUser = indexOfLastUser - ITEMS_PER_PAGE;
   const currentUsers = allUsers.slice(indexOfFirstUser, indexOfLastUser);

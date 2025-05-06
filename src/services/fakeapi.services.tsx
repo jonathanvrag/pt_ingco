@@ -2,6 +2,12 @@ import type { User } from '../types/users';
 
 export type UserFormData = Pick<User, 'firstName' | 'lastName' | 'email'>;
 
+/**
+ * La función obtiene los datos de usuario de una URL específica y devuelve solo los usuarios activos.
+ * @returns La función `fetchUsers` devuelve una matriz de usuarios activos (usuarios con `status`
+ * establecido en `true`) obtenidos de la URL especificada en la variable de entorno `VITE_USERS_URL`.
+ * Si se produce un error durante el proceso de obtención, se devuelve una matriz vacía.
+ */
 export async function fetchUsers(): Promise<User[]> {
   try {
     const response = await fetch(import.meta.env.VITE_USERS_URL);
@@ -21,6 +27,12 @@ export async function fetchUsers(): Promise<User[]> {
   }
 }
 
+/**
+ * Esta función crea un nuevo usuario enviando una solicitud POST con los datos del usuario a una URL específica y
+ * devuelve el usuario creado.
+ * @param {UserFormData} formData - UserFormData {
+ * @returns La función `createUser` devuelve una Promesa que se resuelve en un objeto Usuario.
+ */
 export async function createUser(formData: UserFormData): Promise<User> {
   try {
     const newUserPayload: Omit<User, 'id'> = {
@@ -50,6 +62,13 @@ export async function createUser(formData: UserFormData): Promise<User> {
   }
 }
 
+/**
+ * La función deleteUser(userId: number) envía una solicitud DELETE y un id de usuario especifico y
+ * gestiona los errores según corresponda.
+ * @param {number} userId: el parámetro `userId` de la función `deleteUser` es un número que
+ * representa el identificador único del usuario que se desea eliminar del servidor.
+ * @returns La función `deleteUser` devuelve una promesa que se resuelve como `void`.
+ */
 export async function deleteUser(userId: number): Promise<void> {
   try {
     const response = await fetch(

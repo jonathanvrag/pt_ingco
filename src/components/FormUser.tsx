@@ -17,6 +17,12 @@ export default function FormUser({ onUserCreated, onCancel }: FormUserProps) {
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [, setError] = useState<string | null>(null);
 
+  /**
+   * La función handleChange  actualiza los datos del formulario según la entrada del usuario.
+   * @param e - El parámetro `e` en la función `handleChange` es de tipo`React.ChangeEvent<HTMLInputElement>`.
+   * Esto significa que es un objeto de evento que se activa cuando el valor de un elemento de entrada cambia
+   * en el componente.
+   */
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value } = e.target;
     setFormData(prevFormData => ({
@@ -25,6 +31,13 @@ export default function FormUser({ onUserCreated, onCancel }: FormUserProps) {
     }));
   };
 
+  /**
+   * La función handleSubmit es una función asíncrona que gestiona el envío del formulario, crea un nuevo usuario
+   * usando formData y actualiza el estado según el estado del envío.
+   * @param e - El parámetro `e` de la función `handleSubmit` es de tipo `FormEvent<HTMLFormElement>`.
+   * Representa el evento que se activa al enviar el formulario. Al llamar a `e.preventDefault()`, se evita el
+   * envío del formulario.
+   */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);

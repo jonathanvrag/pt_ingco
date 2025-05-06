@@ -8,10 +8,22 @@ interface TableUsersProps {
 }
 
 export default function TableUsers({ users, onUserDeleted }: TableUsersProps) {
+  /* Este fragmento de código comprueba si el array `users` es falso o tiene una longitud de 0. 
+  Si cualquiera de las condiciones es verdadera, significa que no hay usuarios disponibles en 
+  el array. En ese caso, devuelve un elemento de párrafo con el texto "No hay usuarios disponibles" 
+  centrado en gris. Esta es una comprobación condicional simple para gestionar el caso en el que no 
+  haya usuarios para mostrar en la tabla. */
   if (!users || users.length === 0) {
-    return <p className='text-center text-gray-500'>No users available.</p>;
+    return (
+      <p className='text-center text-gray-500'>No hay usuarios disponibles.</p>
+    );
   }
 
+  /**
+   * La función handleDelete confirma la eliminación del usuario e invoca deleteUser con gestión de errores.
+   * @param {number} userId: el parámetro `userId` de la función `handleDelete` es un número que
+   * representa el identificador único del usuario que se va a eliminar.
+   */
   const handleDelete = async (userId: number) => {
     if (window.confirm('Seguro quieres eliminar el usuario?')) {
       try {
@@ -44,6 +56,8 @@ export default function TableUsers({ users, onUserDeleted }: TableUsersProps) {
           </tr>
         </thead>
         <tbody>
+          {/*Esta parte del código utiliza la función `map` en la matriz `users` para iterar sobre cada objeto 
+          de usuario y crear una fila de tabla (`<tr>`) para cada usuario de la tabla. */}
           {users.map(user => (
             <tr
               key={user.id}
