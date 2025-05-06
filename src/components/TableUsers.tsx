@@ -25,7 +25,7 @@ export default function TableUsers({ users, onUserDeleted }: TableUsersProps) {
   };
 
   return (
-    <div className='rounded-2xl shadow-lg overflow-hidden my-10 overflow-x-auto'>
+    <div className='rounded-2xl shadow-2xl overflow-hidden my-10 overflow-x-auto'>
       <table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
         <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
           <tr>

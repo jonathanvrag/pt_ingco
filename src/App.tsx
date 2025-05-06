@@ -81,17 +81,16 @@ function App() {
   }
 
   return (
-    <div className='container mx-auto p-4 min-h-screen flex flex-col bg-white dark:bg-gray-600'>
-      <h1 className='text-3xl font-bold text-center my-8 text-white'>
+    <div className='mx-auto p-4 sm:px-20 md:px-30 lg:px-50 min-h-screen flex flex-col bg-white dark:bg-gray-600'>
+      <h1 className='text-3xl font-bold text-center my-8 text-gray-700 dark:text-white'>
         Lista de Usuarios
       </h1>
       <div className='flex items-end justify-end'>
-      <button
-        onClick={openModal}
-        className='w-auto px-4 py-2 bg-green-700 text-white rounded-xl hover:bg-green-600 shadow-lg cursor-pointer'>
-        <HiOutlineUserAdd className='size-6' />
-      </button>
-
+        <button
+          onClick={openModal}
+          className='w-auto px-4 py-2 bg-green-700 text-white rounded-xl hover:bg-green-600 shadow-lg cursor-pointer'>
+          <HiOutlineUserAdd className='size-6' />
+        </button>
       </div>
       <div className='flex-grow'>
         <TableUsers users={currentUsers} onUserDeleted={handleUserDeleted} />
