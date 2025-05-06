@@ -5,6 +5,7 @@ import { fetchUsers } from './services/fakeapi.services';
 import TableUsers from './components/TableUsers';
 import Modal from './components/Modal';
 import FormUser from './components/FormUser';
+import UserDetails from './components/UserDetails';
 import { HiOutlineUserAdd } from 'react-icons/hi';
 
 const ITEMS_PER_PAGE = 10;
@@ -16,6 +17,9 @@ function App() {
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
   const [editingUser, setEditingUser] = useState<User | null>(null);
+  const [viewingUser, setViewingUser] = useState<User | null>(null);
+  const [isUserDetailsModalOpen, setIsUserDetailsModalOpen] =
+    useState<boolean>(false);
 
   /* El hook `useEffect` se encarga de obtener los datos del usuario de una API cuando el componente se monta 
   por primera vez. */
@@ -50,7 +54,7 @@ function App() {
 
   /**
    * La función `handleFormSubmit` actualiza la lista de usuarios según si el usuario está siendo editado o añadido.
-   * @param {User} submissionUser - El parámetro `submittedUser` de la función `handleFormSubmit` es
+   * @param {User} submittedUser - El parámetro `submittedUser` de la función `handleFormSubmit` es
    * un objeto de tipo `User` que representa los datos del usuario enviados a través de un formulario.
    */
   const handleFormSubmit = (submittedUser: User) => {
@@ -69,6 +73,16 @@ function App() {
 
   const handleEditUserClick = (user: User) => {
     openModal(user);
+  };
+
+  const openUserDetailsModal = (user: User) => {
+    setViewingUser(user);
+    setIsUserDetailsModalOpen(true);
+  };
+
+  const closeUserDetailsModal = () => {
+    setIsUserDetailsModalOpen(false);
+    setViewingUser(null);
   };
 
   /**
@@ -127,6 +141,7 @@ function App() {
           users={currentUsers}
           onUserDeleted={handleUserDeleted}
           onEditUser={handleEditUserClick}
+          onShowDetails={openUserDetailsModal}
         />
       </div>
       {totalPages > 1 && (
@@ -177,6 +192,13 @@ function App() {
           onCancel={closeModal}
           userToEdit={editingUser}
         />
+      </Modal>
+
+      <Modal
+        isOpen={isUserDetailsModalOpen}
+        onClose={closeUserDetailsModal}
+        title={`Detalles de ${viewingUser?.firstName || 'Usuario'}`}>
+        <UserDetails user={viewingUser} />
       </Modal>
     </div>
   );

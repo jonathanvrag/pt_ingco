@@ -1,17 +1,23 @@
 import type { User } from '../types/users';
 import { deleteUser } from '../services/fakeapi.services';
-import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
+import {
+  HiOutlineInformationCircle,
+  HiOutlinePencil,
+  HiOutlineTrash,
+} from 'react-icons/hi';
 
 interface TableUsersProps {
   users: User[];
   onUserDeleted: (userId: number) => void;
   onEditUser: (user: User) => void;
+  onShowDetails: (user: User) => void;
 }
 
 export default function TableUsers({
   users,
   onUserDeleted,
   onEditUser,
+  onShowDetails,
 }: TableUsersProps) {
   /* Este fragmento de código comprueba si el array `users` es falso o tiene una longitud de 0. 
   Si cualquiera de las condiciones es verdadera, significa que no hay usuarios disponibles en 
@@ -71,6 +77,11 @@ export default function TableUsers({
               <td className='px-6 py-4 text-sm'>{user.lastName}</td>
               <td className='px-6 py-4 text-sm'>{user.email}</td>
               <td className='px-6 py-4 text-sm gap-4 flex justify-start items-center'>
+                <button
+                  onClick={() => onShowDetails(user)}
+                  className='text-yellow-600 hover:text-yellow-800 font-medium cursor-pointer'>
+                  <HiOutlineInformationCircle className='text-lg' />
+                </button>
                 <button
                   onClick={() => onEditUser(user)}
                   className='text-green-600 hover:text-green-800 font-medium cursor-pointer'>
