@@ -1,26 +1,107 @@
-import { useEffect, useState } from 'react'
-import type { User } from './types/users'
-import './App.css'
-import { fetchUsers } from './services/fakeapi.services'
-import TableUsers from './components/TableUsers'
+import { useEffect, useState } from 'react';
+import type { User } from './types/users';
+import './App.css';
+import { fetchUsers } from './services/fakeapi.services';
+import TableUsers from './components/TableUsers';
+
+const ITEMS_PER_PAGE = 10;
 
 function App() {
-  const [users, setUsers] = useState<User[]>([])
+  const [allUsers, setAllUsers] = useState<User[]>([]);
+  const [currentPage, setCurrentPage] = useState<number>(1);
+  const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
     const fetchData = async () => {
-      const users = await fetchUsers()
-      setUsers(users)
-    }
+      setLoading(true);
+      setError(null);
 
-    fetchData()
-  }, [])
+      try {
+        const usersFromApi = await fetchUsers();
+        setAllUsers(usersFromApi);
+      } catch (error) {
+        console.log('Failed to fetch users');
+        setError(error instanceof Error ? error.message : 'Unknown error');
+        setAllUsers([]);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchData();
+  }, []);
+
+  const indexOfLastUser = currentPage * ITEMS_PER_PAGE;
+  const indexOfFirstUser = indexOfLastUser - ITEMS_PER_PAGE;
+  const currentUsers = allUsers.slice(indexOfFirstUser, indexOfLastUser);
+
+  const totalPages = Math.ceil(allUsers.length / ITEMS_PER_PAGE);
+
+  const goToNextPage = () =>
+    setCurrentPage(prevPage => Math.min(prevPage + 1, totalPages));
+  const goToPreviousPage = () =>
+    setCurrentPage(prevPage => Math.max(prevPage - 1, 1));
+  const goToPage = (pageNumber: number) => {
+    const page = Math.max(1, Math.min(pageNumber, totalPages));
+    setCurrentPage(page);
+  };
+
+  if (loading) {
+    return <p className='text-center text-gray-500'>Loading...</p>;
+  }
+
+  if (error) {
+    return <p className='text-center text-red-500'>Error: {error}</p>;
+  }
 
   return (
-    <>
-      <TableUsers users={users} />
-    </>
-  )
+    <div className='container mx-auto p-4 min-h-screen flex flex-col'>
+      <h1 className='text-3xl font-bold text-center my-8 text-gray-800'>
+        Lista de Usuarios
+      </h1>
+      <div className='flex-grow'>
+        <TableUsers users={currentUsers} />
+      </div>
+      {totalPages > 1 && (
+        <div className='flex justify-center items-center space-x-2 py-8'>
+          <button
+            onClick={goToPreviousPage}
+            disabled={currentPage === 1}
+            className='px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'>
+            Anterior
+          </button>
+          {Array.from({ length: totalPages }, (_, i) => i + 1).map(
+            pageNumber => (
+              <button
+                key={pageNumber}
+                onClick={() => goToPage(pageNumber)}
+                disabled={currentPage === pageNumber}
+                className={`px-4 py-2 rounded ${
+                  currentPage === pageNumber
+                    ? 'bg-blue-500 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                } disabled:opacity-75`}>
+                {pageNumber}
+              </button>
+            )
+          )}
+          <button
+            onClick={goToNextPage}
+            disabled={currentPage === totalPages || totalPages === 0}
+            className='px-4 py-2 bg-gray-200 text-gray-700 rounded hover:bg-gray-300 disabled:opacity-50 disabled:cursor-not-allowed'>
+            Siguiente
+          </button>
+        </div>
+      )}
+      {allUsers.length > 0 && totalPages > 0 && (
+        <p className='text-center text-sm text-gray-600 pb-4'>
+          Página {currentPage} de {totalPages}. Mostrando {currentUsers.length}{' '}
+          de {allUsers.length} usuarios.
+        </p>
+      )}
+    </div>
+  );
 }
 
-export default App
+export default App;
