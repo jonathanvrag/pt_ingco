@@ -24,37 +24,33 @@ export default function TableUsers({ users, onUserDeleted }: TableUsersProps) {
   };
 
   return (
-    <div className='overflow-x-auto px-96 py-10'>
-      <table className='min-w-full border-collapse border border-gray-200 bg-white shadow-md rounded-lg'>
-        <thead className='bg-gray-100'>
+    <div className='rounded-2xl shadow-lg overflow-hidden my-10 overflow-x-auto'>
+      <table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
+        <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
           <tr>
-            <th className='px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase'>
+            <th scope='col' className='px-6 py-3'>
               Nombre
             </th>
-            <th className='px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase'>
+            <th scope='col' className='px-6 py-3'>
               Apellidos
             </th>
-            <th className='px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase'>
+            <th scope='col' className='px-6 py-3'>
               Email
             </th>
-            <th className='px-6 py-3 text-left text-sm font-medium text-gray-700 uppercase'>
+            <th scope='col' className='px-6 py-3'>
               Acciones
             </th>
           </tr>
         </thead>
         <tbody>
-          {users.map((user, index) => (
+          {users.map(user => (
             <tr
               key={user.id}
-              className={index % 2 === 0 ? 'bg-white' : 'bg-gray-50'}>
-              <td className='px-6 py-4 text-sm text-gray-900'>
-                {user.firstName}
-              </td>
-              <td className='px-6 py-4 text-sm text-gray-900'>
-                {user.lastName}
-              </td>
-              <td className='px-6 py-4 text-sm text-gray-900'>{user.email}</td>
-              <td className='px-6 py-4 text-sm text-gray-900'>
+              className='bg-white border-b dark:bg-gray-800 dark:border-gray-700 border-gray-200 hover:bg-gray-50 dark:hover:bg-gray-600'>
+              <td className='px-6 py-4 text-sm'>{user.firstName}</td>
+              <td className='px-6 py-4 text-sm'>{user.lastName}</td>
+              <td className='px-6 py-4 text-sm'>{user.email}</td>
+              <td className='px-6 py-4 text-sm'>
                 <button
                   onClick={() => handleDelete(user.id)}
                   className='text-red-600 hover:text-red-800 font-medium'>
