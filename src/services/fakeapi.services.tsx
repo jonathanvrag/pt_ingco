@@ -89,3 +89,39 @@ export async function deleteUser(userId: number): Promise<void> {
     throw error;
   }
 }
+
+/**
+ * Actualiza un usuario existente enviando una solicitud PATCH con los datos del usuario a una URL específica.
+ * @param {number} userId - El ID del usuario a actualizar.
+ * @param {Partial<Omit<User, 'id'>>} userData - Los datos del usuario a actualizar. Puede ser un subconjunto de
+ * los campos del usuario.
+ * @returns La función `updateUser` devuelve una Promesa que se resuelve en el objeto Usuario actualizado.
+ */
+export async function updateUser(
+  userId: number,
+  userData: Partial<Omit<User, 'id'>>
+): Promise<User> {
+  try {
+    const response = await fetch(
+      `${import.meta.env.VITE_USERS_URL}/${userId}`,
+      {
+        method: 'PATCH',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(userData),
+      }
+    );
+
+    if (!response.ok) {
+      throw new Error(
+        `Network response was not ok on update: ${response.status}`
+      );
+    }
+
+    return (await response.json()) as User;
+  } catch (error) {
+    console.error(`Error updating user with ID ${userId}:`, error);
+    throw error;
+  }
+}

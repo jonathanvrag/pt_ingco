@@ -15,6 +15,7 @@ function App() {
   const [loading, setLoading] = useState<boolean>(true);
   const [error, setError] = useState<string | null>(null);
   const [isModalOpen, setIsModalOpen] = useState<boolean>(false);
+  const [editingUser, setEditingUser] = useState<User | null>(null);
 
   /* El hook `useEffect` se encarga de obtener los datos del usuario de una API cuando el componente se monta 
   por primera vez. */
@@ -38,21 +39,36 @@ function App() {
     fetchData();
   }, []);
 
-  const openModal = () => setIsModalOpen(true);
+  const openModal = (userToEdit: User | null = null) => {
+    setEditingUser(userToEdit);
+    setIsModalOpen(true);
+  };
+
   const closeModal = () => {
     setIsModalOpen(false);
   };
 
   /**
-   * La función `handleUserCreated` añade un nuevo usuario a la lista de todos los usuarios, cierra un modal y
-   * establece la página actual en 1.
-   * @param {User} createdUser - El parámetro `createdUser` es un objeto que representa a un usuario recién creado.
-   * Contiene información como el nombre, el apellido y el correo electrónico.
+   * La función `handleFormSubmit` actualiza la lista de usuarios según si el usuario está siendo editado o añadido.
+   * @param {User} submissionUser - El parámetro `submittedUser` de la función `handleFormSubmit` es
+   * un objeto de tipo `User` que representa los datos del usuario enviados a través de un formulario.
    */
-  const handleUserCreated = (createdUser: User) => {
-    setAllUsers(prevUsers => [createdUser, ...prevUsers]);
+  const handleFormSubmit = (submittedUser: User) => {
+    if (editingUser) {
+      setAllUsers(prevUsers =>
+        prevUsers.map(user =>
+          user.id === submittedUser.id ? submittedUser : user
+        )
+      );
+    } else {
+      setAllUsers(prevUsers => [submittedUser, ...prevUsers]);
+      setCurrentPage(1);
+    }
     closeModal();
-    setCurrentPage(1);
+  };
+
+  const handleEditUserClick = (user: User) => {
+    openModal(user);
   };
 
   /**
@@ -101,13 +117,17 @@ function App() {
       </h1>
       <div className='flex items-end justify-end'>
         <button
-          onClick={openModal}
+          onClick={() => openModal()}
           className='w-auto px-4 py-2 bg-green-700 text-white rounded-xl hover:bg-green-600 shadow-lg cursor-pointer'>
           <HiOutlineUserAdd className='size-6' />
         </button>
       </div>
       <div className='flex-grow'>
-        <TableUsers users={currentUsers} onUserDeleted={handleUserDeleted} />
+        <TableUsers
+          users={currentUsers}
+          onUserDeleted={handleUserDeleted}
+          onEditUser={handleEditUserClick}
+        />
       </div>
       {totalPages > 1 && (
         <div className='flex justify-center items-center space-x-2 py-8'>
@@ -141,7 +161,7 @@ function App() {
         </div>
       )}
       {allUsers.length > 0 && totalPages > 0 && (
-        <p className='text-center text-sm text-gray-600 pb-4'>
+        <p className='text-center text-sm text-gray-600 dark:text-white pb-4'>
           Página {currentPage} de {totalPages}. Mostrando {currentUsers.length}{' '}
           de {allUsers.length} usuarios.
         </p>
@@ -150,8 +170,13 @@ function App() {
       <Modal
         isOpen={isModalOpen}
         onClose={closeModal}
-        title='Gestionar Usuario'>
-        <FormUser onUserCreated={handleUserCreated} onCancel={closeModal} />
+        title={editingUser ? 'Editar Usuario' : 'Agregar Nuevo Usuario'} // Título dinámico
+      >
+        <FormUser
+          onFormSubmit={handleFormSubmit}
+          onCancel={closeModal}
+          userToEdit={editingUser}
+        />
       </Modal>
     </div>
   );

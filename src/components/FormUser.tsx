@@ -1,14 +1,19 @@
-import React, { useState, type FormEvent } from 'react';
+import React, { useState, type FormEvent, useEffect } from 'react';
 import type { UserFormData } from '../services/fakeapi.services';
 import type { User } from '../types/users';
-import { createUser } from '../services/fakeapi.services';
+import { createUser, updateUser } from '../services/fakeapi.services';
 
 interface FormUserProps {
-  onUserCreated: (createdUser: User) => void;
+  onFormSubmit: (submittedUser: User) => void;
   onCancel: () => void;
+  userToEdit?: User | null;
 }
 
-export default function FormUser({ onUserCreated, onCancel }: FormUserProps) {
+export default function FormUser({
+  onFormSubmit,
+  onCancel,
+  userToEdit,
+}: FormUserProps) {
   const [formData, setFormData] = useState<UserFormData>({
     firstName: '',
     lastName: '',
@@ -16,6 +21,20 @@ export default function FormUser({ onUserCreated, onCancel }: FormUserProps) {
   });
   const [isSubmitting, setIsSubmitting] = useState(false);
   const [, setError] = useState<string | null>(null);
+
+  /* El gancho `useEffect` en el fragmento de código proporcionado se encarga de actualizar los datos del 
+  formulario (`formData`) según la propiedad `userToEdit` cada vez que `userToEdit` cambia. */
+  useEffect(() => {
+    if (userToEdit) {
+      setFormData({
+        firstName: userToEdit.firstName,
+        lastName: userToEdit.lastName,
+        email: userToEdit.email,
+      });
+    } else {
+      setFormData({ firstName: '', lastName: '', email: '' });
+    }
+  }, [userToEdit]);
 
   /**
    * La función handleChange  actualiza los datos del formulario según la entrada del usuario.
@@ -32,19 +51,22 @@ export default function FormUser({ onUserCreated, onCancel }: FormUserProps) {
   };
 
   /**
-   * La función handleSubmit es una función asíncrona que gestiona el envío del formulario, crea un nuevo usuario
-   * usando formData y actualiza el estado según el estado del envío.
+   * La función handleSubmit gestiona el envío de formularios actualizando o creando un usuario y mostrando cualquier error.
    * @param e - El parámetro `e` de la función `handleSubmit` es de tipo `FormEvent<HTMLFormElement>`.
-   * Representa el evento que se activa al enviar el formulario. Al llamar a `e.preventDefault()`, se evita el
-   * envío del formulario.
+   * Este parámetro representa el evento que se activa al enviar el formulario.
    */
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     setIsSubmitting(true);
     setError(null);
     try {
-      const newUserFromApi = await createUser(formData);
-      onUserCreated(newUserFromApi);
+      let submittedUser: User;
+      if (userToEdit && userToEdit.id) {
+        submittedUser = await updateUser(userToEdit.id, formData);
+      } else {
+        submittedUser = await createUser(formData);
+      }
+      onFormSubmit(submittedUser);
     } catch (err) {
       setError(
         err instanceof Error ? err.message : 'Error al crear el usuario.'
@@ -109,7 +131,11 @@ export default function FormUser({ onUserCreated, onCancel }: FormUserProps) {
           type='submit'
           disabled={isSubmitting}
           className='w-full flex justify-center py-2 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 disabled:opacity-50 cursor-pointer'>
-          {isSubmitting ? 'Guardando...' : 'Guardar Usuario'}
+          {isSubmitting
+            ? 'Guardando...'
+            : userToEdit
+            ? 'Actualizar Usuario'
+            : 'Guardar Usuario'}
         </button>
         <button
           type='button'

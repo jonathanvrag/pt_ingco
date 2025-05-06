@@ -1,13 +1,18 @@
 import type { User } from '../types/users';
 import { deleteUser } from '../services/fakeapi.services';
-import { HiOutlineTrash } from 'react-icons/hi';
+import { HiOutlinePencil, HiOutlineTrash } from 'react-icons/hi';
 
 interface TableUsersProps {
   users: User[];
   onUserDeleted: (userId: number) => void;
+  onEditUser: (user: User) => void;
 }
 
-export default function TableUsers({ users, onUserDeleted }: TableUsersProps) {
+export default function TableUsers({
+  users,
+  onUserDeleted,
+  onEditUser,
+}: TableUsersProps) {
   /* Este fragmento de código comprueba si el array `users` es falso o tiene una longitud de 0. 
   Si cualquiera de las condiciones es verdadera, significa que no hay usuarios disponibles en 
   el array. En ese caso, devuelve un elemento de párrafo con el texto "No hay usuarios disponibles" 
@@ -39,7 +44,7 @@ export default function TableUsers({ users, onUserDeleted }: TableUsersProps) {
   return (
     <div className='rounded-2xl shadow-2xl overflow-hidden my-10 overflow-x-auto'>
       <table className='w-full text-sm text-left rtl:text-right text-gray-500 dark:text-gray-400'>
-        <thead className='text-xs text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
+        <thead className='text-md text-gray-700 uppercase bg-gray-50 dark:bg-gray-700 dark:text-gray-400'>
           <tr>
             <th scope='col' className='px-6 py-3'>
               Nombre
@@ -65,7 +70,12 @@ export default function TableUsers({ users, onUserDeleted }: TableUsersProps) {
               <td className='px-6 py-4 text-sm'>{user.firstName}</td>
               <td className='px-6 py-4 text-sm'>{user.lastName}</td>
               <td className='px-6 py-4 text-sm'>{user.email}</td>
-              <td className='px-6 py-4 text-sm'>
+              <td className='px-6 py-4 text-sm gap-4 flex justify-start items-center'>
+                <button
+                  onClick={() => onEditUser(user)}
+                  className='text-green-600 hover:text-green-800 font-medium cursor-pointer'>
+                  <HiOutlinePencil className='text-lg' />
+                </button>
                 <button
                   onClick={() => handleDelete(user.id)}
                   className='text-red-600 hover:text-red-800 font-medium cursor-pointer'>
